@@ -11,6 +11,7 @@ import br.com.guilherme.projeto.service.UsuarioService;
 
 @RestController
 @RequestMapping(value = "/usuario")
+@CrossOrigin
 public class UsuarioController {
 	
 	@Autowired
