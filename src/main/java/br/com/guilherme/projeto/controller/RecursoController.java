@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/recurso")
-@CrossOrigin
 public class RecursoController {
 
     @Autowired
