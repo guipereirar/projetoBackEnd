@@ -1,7 +1,6 @@
 package br.com.guilherme.projeto.controller;
 
 import br.com.guilherme.projeto.dto.RecursoDTO;
-import br.com.guilherme.projeto.dto.UsuarioDTO;
 import br.com.guilherme.projeto.service.RecursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ public class RecursoController {
     @GetMapping
     public List<RecursoDTO> listarTodos(){
         return recursoService.listarTodos();
-    };
+    }
 
     @PostMapping
     public void inserir(@RequestBody RecursoDTO recurso){
