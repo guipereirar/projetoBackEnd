@@ -1,8 +1,6 @@
 package br.com.guilherme.projeto.entity;
 
-import br.com.guilherme.projeto.dto.PerfilDTO;
 import br.com.guilherme.projeto.dto.PermissaoPerfilRecursoDTO;
-import br.com.guilherme.projeto.dto.RecursoDTO;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class PermissaoPerfilRecursoEntity {
 
     @Id
