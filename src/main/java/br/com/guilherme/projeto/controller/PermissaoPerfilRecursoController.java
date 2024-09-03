@@ -32,7 +32,7 @@ public class PermissaoPerfilRecursoController {
         return permissaoPerfilRecursoService.alterar(permissaoPerfilRecurso);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable("id") Long id) {
         permissaoPerfilRecursoService.excluir(id);
         return ResponseEntity.ok().build();
