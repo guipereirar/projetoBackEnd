@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class PermissaoPerfilRecursoEntity {
 
     @Id
