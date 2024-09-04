@@ -20,7 +20,7 @@ public class PermissaoPerfilRecursoService {
     }
 
     public void inserir(PermissaoPerfilRecursoDTO permissaoPerfilRecurso){
-        PermissaoPerfilRecursoEntity permissaoPerfilRecursoEntity = new PermissaoPerfilRecursoEntity();
+        PermissaoPerfilRecursoEntity permissaoPerfilRecursoEntity = new PermissaoPerfilRecursoEntity(permissaoPerfilRecurso);
         permissaoPerfilRecursoRepository.save(permissaoPerfilRecursoEntity);
     }
 
