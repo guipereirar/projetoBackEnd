@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class AuthController {
 
-
     @Autowired
     private AuthService authService;
 
@@ -28,5 +27,10 @@ public class AuthController {
     @PostMapping(value = "/novoUsuario")
     public void inserirNovoUsuario(@RequestBody UsuarioDTO novoUsuario){
         usuarioService.inserirNovoUsuario(novoUsuario);
+    }
+
+    @GetMapping(value = "/verificarCadastro/{uuid}")
+    public String verificarCadastro(@PathVariable("uuid") String uuid){
+        return usuarioService.verificarCadastro(uuid);
     }
 }

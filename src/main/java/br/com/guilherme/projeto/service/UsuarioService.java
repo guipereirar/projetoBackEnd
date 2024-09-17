@@ -1,8 +1,12 @@
 package br.com.guilherme.projeto.service;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
+import br.com.guilherme.projeto.entity.UsuarioVerificadorEntity;
 import br.com.guilherme.projeto.entity.enums.TipoSituacaoUsuario;
+import br.com.guilherme.projeto.repository.UsuarioVerificadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,17 +22,19 @@ public class UsuarioService {
 	private UsuarioRepository usuarioRepository;
 
 	@Autowired
+	private UsuarioVerificadorRepository usuarioVerificadorRepository;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	public List<UsuarioDTO> listarTodos(){
 		List<UsuarioEntity> usuarios = usuarioRepository.findAll();
 		return usuarios.stream().map(UsuarioDTO::new).toList();
 	}
-	
-	
+
 	public void inserir(UsuarioDTO usuario) {
 		UsuarioEntity usuarioEntity = new UsuarioEntity(usuario);
 		usuarioEntity.setSenha(passwordEncoder.encode(usuario.getSenha()));
@@ -42,9 +48,33 @@ public class UsuarioService {
 		usuarioEntity.setId(null);
 		usuarioRepository.save(usuarioEntity);
 
-		emailService.enviarEmailTexto(usuario.getEmail(), "Novo usuário cadastrado", "Você está recebendo um email de cadastro");
+		UsuarioVerificadorEntity verificador = new UsuarioVerificadorEntity();
+		verificador.setUsuario(usuarioEntity);
+		verificador.setUuid(UUID.randomUUID());
+		verificador.setDataExpiracao(Instant.now().plusMillis(90000));
+		usuarioVerificadorRepository.save(verificador);
+
+		emailService.enviarEmailTexto(usuario.getEmail(), "Novo usuário cadastrado", "Você está recebendo um email de cadastro, o numero para validação é " + verificador.getUuid());
 	}
-	
+
+	public String verificarCadastro(String uuid){
+		UsuarioVerificadorEntity usuarioVerificacao = usuarioVerificadorRepository.findByUuid(UUID.fromString(uuid)).get();
+
+		if(usuarioVerificacao != null){
+			if(usuarioVerificacao.getDataExpiracao().compareTo(Instant.now()) >= 0){
+				UsuarioEntity u = usuarioVerificacao.getUsuario();
+				u.setSituacao(TipoSituacaoUsuario.ATIVO);
+				usuarioRepository.save(u);
+				return "Usuário verificado com sucesso!";
+			}else{
+				usuarioVerificadorRepository.delete(usuarioVerificacao);
+				return "Tempo de verificação expirado";
+			}
+		}else{
+			return "Usuário não verificado";
+		}
+    }
+
 	public UsuarioDTO alterar(UsuarioDTO usuario) {
 		UsuarioEntity usuarioEntity = new UsuarioEntity(usuario);
 		usuarioEntity.setSenha(passwordEncoder.encode(usuario.getSenha()));
@@ -55,9 +85,9 @@ public class UsuarioService {
 		UsuarioEntity usuario = usuarioRepository.findById(id).get();
 		usuarioRepository.delete(usuario);
 	}
-	
-	public UsuarioDTO buscarPorId(Long id) {
 
+
+	public UsuarioDTO buscarPorId(Long id) {
 		return new UsuarioDTO(usuarioRepository.findById(id).get());
 	}
 }
